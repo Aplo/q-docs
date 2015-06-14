@@ -49,7 +49,7 @@ The Authorization header uses your client ID and request signature concatenated 
 
 ## Request signatures
 
-Request signatures are an HMAC hash of the URI you're sending the request to, any query parameters present in the request, and any request body you are sending if the request is a `POST/PUT/PATCH`. The HMAC should use `sha` as the algorithm and return a hex digest, not bytes as some languages return by default.
+Request signatures are an HMAC hash of the URI you're sending the request to, any query parameters present in the request, and any request body you are sending if the request is a `POST/PUT/PATCH`. The HMAC should use `sha1` as the algorithm and return a hex digest, not bytes as some languages return by default.
 
 # Quotes with Subsidy
 
