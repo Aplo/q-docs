@@ -32,10 +32,16 @@ export SECRET_TOKEN=fh29s9hf9vejsdaiKwAbde
 echo -n "/plans/il/60452/" | openssl dgst -sha1 -hmac $SECRET_TOKEN
 #=> "c48ad0f7807dc5820bfcb05c9168c3fc1be7c668"
 
-curl -i -H "Authorization: "abc-123-456:c48ad0f7807dc5820bfcb05c9168c3fc1be7c668" https://q.aploquote.com/plans/il/60452/
+curl -i \
+  -H "Authorization: "abc-123-456:c48ad0f7807dc5820bfcb05c9168c3fc1be7c668" \
+  https://q.aploquote.com/plans/il/60452/
 ```
 
-> Make sure to replace the client ID and secret token with your own API credentials.
+```js
+// Our Node library handles this automatically
+```
+
+> Make sure to replace the client ID and secret token with your own API credentials and to generate a unique signature for each request.
 
 Q uses a combination of public API keys and request signing to authorize all requests made to the API. Q expects an `Authorization` header to be sent with every request in the format of `Authorization: CLIENT_ID:SIGNATURE`.
 
@@ -45,6 +51,10 @@ Q uses a combination of public API keys and request signing to authorize all req
 "Authorization: "abc-123-456:c48ad0f7807dc5820bfcb05c9168c3fc1be7c668" https://q.aploquote.com/plans/il/60452/
 ```
 
+```js
+// ...
+```
+
 The Authorization header uses your client ID and request signature concatenated by a `:` character.
 
 ## Request signatures
@@ -52,6 +62,11 @@ The Authorization header uses your client ID and request signature concatenated 
 Request signatures are an HMAC hash of the URI you're sending the request to, any query parameters present in the request, and any request body you are sending if the request is a `POST/PUT/PATCH`. The HMAC should use `sha1` as the algorithm and return a hex digest, not bytes as some languages return by default.
 
 # Quotes with Subsidy
+
+```shell
+curl -H "Authorization my-client-id:generated-request-signature" 
+  https://q.aploquote.com/plans/il/60654
+```
 
 ```js
 var QClient = require('q-client');
@@ -144,14 +159,14 @@ This endpoint will return all the health plans for the rating scenario you post 
 
 `POST https://q.aploquote.com/plans/:state/:zipcode`
 
-You should pass a 2 letter state code and 5 digit zip code to the `/plans/` endpoint along with the JSON shown to the right in your request body. If the state is unknown or you only have a zip code, simply pass `none` for the state code. A zip code is *always* required. A state is also required with the only exception being the ability to pass `none` when you are unable to. Passing `state` in your request will generate a faster response from the API.
+You should pass a 2 letter state code and 5 digit zip code to the `/plans/` endpoint along with the JSON shown to the right in your request body. __If the state is unknown or you only have a zip code__, simply pass `none` for the state code. A zip code is *always* required. A state is also required with the only exception being the ability to pass `none` when you are unable to. Passing `state` in your request will generate a faster response from the API.
 
 ### URI Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-state | null | 2 letter state code or `none` if not available. Required.
-zipcode | null | 5 digit zip code for the requestor. Required.
+Parameter | Default | Description | Required
+--------- | ------- | ----------- | --------
+state | null | 2 letter state code or `none` if not available. | true
+zipcode | null | 5 digit zip code for the requestor. | true
 
 <aside class="info">
 Both <code>zipcode</code> and <code>state</code> are always required.
